@@ -2,7 +2,7 @@
 #
 #
 current_package() {
-    adb shell dumpsys activity recents | grep -w "Recent #0" \ | cut -d '=' -f 2 | cut -d ' ' -f 1
+    adb shell dumpsys activity recents | grep -w "Recent #0" | cut -d '=' -f 2 | cut -d ' ' -f 1
 }
 
 pull() {

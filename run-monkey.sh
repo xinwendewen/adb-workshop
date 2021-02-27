@@ -1,14 +1,17 @@
 #!/bin/bash
 #
-
+#
 CURRENT_DIR="$(cd "$(dirname "$BASH_SOURCE[0]")" && pwd)"
-source ${CURRENT_DIR}/adb-functions.sh
 
 readonly DROPBOX_PATH="/data/system/dropbox"
 readonly ANR_PATH="/data/anr"
 readonly TOMBSTOMES_PATH="/data/tombstones"
 
 readonly MONKEY_LOG_PATH="${CURRENT_DIR}/monkey_logs"
+
+shopt -s expand_aliases
+source ${CURRENT_DIR}/env-setup.sh
+source ${CURRENT_DIR}/adb-functions.sh
 
 yse_or_no() {
     local propmt="$1"
@@ -19,7 +22,7 @@ yse_or_no() {
     false
 }
 
-main() {
+run_monkey() {
     echo "Welcome to the monkey runner, here are some questions:"
     if yse_or_no "Need to clear ${DROPBOX_PATH}?"; then
         clear_dir "${DROPBOX_PATH}"
@@ -43,13 +46,17 @@ main() {
     do
         monkey_options="${monkey_options} -p ${package}"
     done
-    monkey_options="${monkey_options} -p com.xinwendewen.android.transition"
     read -p "event count: " count
+    if [[ -z "${count}" ]]; then
+        echo "no input event count"
+        return 1
+    fi
     echo "Here is the monkey command:"
     echo "adb shell monkey ${monkey_options} ${count}"
     local suffix="$(date "+%y-%m-%d_%H-%M")"
     local log_file="${MONKEY_LOG_PATH}/monkey-${suffix}.log"
-    if yse_or_no "Run the command right now?" ; then
+    read -p "Run the command right now? (n/y)"
+    if [[ "${REPLY}" = "y" ]]; then
         if [[ ! -d "${MONKEY_LOG_PATH}" ]]; then
             mkdir -p "${MONKEY_LOG_PATH}"
         fi
@@ -60,6 +67,10 @@ main() {
     adb pull "${DROPBOX_PATH}"
     adb pull "${ANR_PATH}"
     adb pull "${TOMBSTOMES_PATH}"
+}
+
+main() {
+    run_monkey
 }
 
 main
