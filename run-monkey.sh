@@ -30,6 +30,9 @@ run_monkey() {
     if yse_or_no "Need to clear ${ANR_PATH}?"; then
         clear_dir "${ANR_PATH}"
     fi
+    if yse_or_no "Need to clear ${TOMBSTOMES_PATH}?"; then
+        clear_dir "${TOMBSTOMES_PATH}"
+    fi
     local monkey_options="-v -v"
     if yse_or_no "Ignore crashes?" ; then
         monkey_options="${monkey_options} --ignore-crashes"
