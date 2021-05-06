@@ -31,9 +31,3 @@ show_project() {
     shift
     repo list $@
 }
-
-main() {
-    #repo_sync $@
-}
-
-main $@

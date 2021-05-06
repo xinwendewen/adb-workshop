@@ -27,8 +27,3 @@ remotable_adb() {
         adb ${cmd}
     fi
 }
-
-main() {
-}
-
-main $@
